@@ -8,17 +8,19 @@
 using static System.Console;
 
 namespace A2._1;
+
 class Program {
    static void Main () {
+      const int MIN = 1, MAX = 100;
       int secretNum;
       while (true) {
-         Write ("Enter a secret number (1 to 100): ");
-         if (int.TryParse (ReadLine (), out secretNum) && secretNum >= 1 && secretNum <= 100) break;
+         Write ($"Enter a secret number ({MIN} to {MAX}): ");
+         if (int.TryParse (ReadLine (), out secretNum) && secretNum >= MIN && secretNum <= MAX) break;
          WriteLine ("Invalid number!");
       }
-      int left = 1, right = 100, guess;
+      int left = MIN, right = MAX, guess;
       while (left <= right) {
-         guess = left + (right - left) / 2;
+         guess = (right + left) / 2;
          WriteLine ($"\nComputer's guess: {guess}");
          if (guess == secretNum) break;
          ConsoleKey input;
