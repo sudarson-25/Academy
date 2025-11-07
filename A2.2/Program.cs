@@ -8,11 +8,13 @@
 using static System.Console;
 
 namespace A2._2;
+
 class Program {
    static void Main () {
+      const int MIN = 1, MAX = 100;
       while (true) {
-         Write ("Enter a secret number (1 to 100): ");
-         if (int.TryParse (ReadLine (), out int secretNum) && secretNum >= 1 && secretNum <= 100)
+         Write ($"Enter a secret number ({MIN} to {MAX}): ");
+         if (int.TryParse (ReadLine (), out int secretNum) && secretNum >= MIN && secretNum <= MAX)
             break;
          WriteLine ("Invalid number!");
       }
@@ -21,19 +23,18 @@ class Program {
    }
 
    static int GetSecretNum (out char[] revBin) {
-      int secretNum = 0, divisor = 1;
+      int secretNum = 0;
       revBin = new char[8];
       for (int i = 0; i < 8; i++) {
-         divisor *= 2;
          ConsoleKey input;
          while (true) {
-            Write ($"\nIs the remainder when divided by {divisor} >= {1 << i}? (Y/N): ");
+            Write ($"\nIs the remainder when divided by {1 << (i + 1)} >= {1 << i}? (Y/N): ");
             input = ReadKey ().Key;
             if (input is ConsoleKey.Y or ConsoleKey.N) break;
             Write ("\nInvalid input");
          }
          if (input == ConsoleKey.Y) {
-            secretNum += 1 << i;
+            secretNum |= 1 << i;
             revBin[i] = '1';
          } else revBin[i] = '0';
       }
