@@ -28,7 +28,9 @@ class Program {
       for (int i = 0; i < 8; i++) {
          ConsoleKey input;
          while (true) {
-            Write ($"\nIs the remainder when divided by {1 << (i + 1)} >= {1 << i}? (Y/N): ");
+            // 1<<i gives the value of the current bit position
+            Write ($"\nIs the remainder >= {1 << i} when the secret number is divided by " +
+               $"{1 << (i + 1)}? (Y/N) ");// 1<<(i+1) is the divisor to isolate that bit
             input = ReadKey ().Key;
             if (input is ConsoleKey.Y or ConsoleKey.N) break;
             Write ("\nInvalid input");
