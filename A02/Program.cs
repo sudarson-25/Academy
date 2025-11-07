@@ -7,13 +7,12 @@
 // ------------------------------------------------------------------------------------------------
 using static System.Console;
 
-int num = new Random ().Next (1, 101);
+const int MIN = 1, MAX = 100;
+int num = new Random ().Next (MIN, MAX + 1);
 while (true) {
-   Write ("Enter your guess (1 to 100): ");
-   if (int.TryParse (ReadLine (), out int guess) && guess >= 1 && guess <= 100) {
-      if (guess == num) {
-         WriteLine ("You guessed correctly"); break;
-      }
-      WriteLine ("Your guess is too " + (guess > num ? "high" : "low"));
+   Write ($"Enter your guess ({MIN} to {MAX}): ");
+   if (int.TryParse (ReadLine (), out int guess) && guess >= MIN && guess <= MAX) {
+      if (guess == num) { WriteLine ("You guessed correctly"); break; }
+      WriteLine ($"Your guess is too {(guess > num ? "high" : "low")}");
    } else WriteLine ("Invalid input!");
 }
