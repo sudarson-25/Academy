@@ -5,8 +5,6 @@
 // Program.cs
 // Program to build a frequency table with occurrence of the 7 most common letters
 // ------------------------------------------------------------------------------------------------
-using static System.Console;
-
 namespace A04;
 
 class Program {
@@ -17,6 +15,6 @@ class Program {
          if (char.IsLetter (ch)) frequencyTable[ch] = frequencyTable.GetValueOrDefault (ch) + 1;
       var keys = frequencyTable.OrderByDescending (pair => pair.Value).Take (7)
          .ToDictionary ().Keys;
-      foreach (char key in keys) WriteLine ($"{key} {frequencyTable[key]}");
+      foreach (char key in keys) Console.WriteLine ($"{key} {frequencyTable[key]}");
    }
 }
