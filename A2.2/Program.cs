@@ -22,6 +22,7 @@ class Program {
          $"{new string (revBin)}<-MSB");
    }
 
+   // Returns the secret number by processing bits from least to most significant
    static int GetSecretNum (out char[] revBin) {
       int secretNum = 0;
       revBin = new char[8];
@@ -33,7 +34,7 @@ class Program {
                $"{1 << (i + 1)}? (Y/N) ");// 1<<(i+1) is the divisor to isolate that bit
             input = ReadKey ().Key;
             if (input is ConsoleKey.Y or ConsoleKey.N) break;
-            WriteLine ("\nInvalid input");
+            Write ("\nInvalid input");
          }
          if (input == ConsoleKey.Y) {
             secretNum |= 1 << i;
