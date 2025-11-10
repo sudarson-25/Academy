@@ -14,7 +14,7 @@ class Program {
       string text = File.ReadAllText ("c:/etc/words.txt");
       Dictionary<char, int> frequencyTable = [];
       foreach (char ch in text)
-         if (char.IsLetter (ch) && !frequencyTable.TryAdd (ch, 1)) frequencyTable[ch]++;
+         if (char.IsLetter (ch)) frequencyTable[ch] = frequencyTable.GetValueOrDefault (ch) + 1;
       var keys = frequencyTable.OrderByDescending (pair => pair.Value).Take (7)
          .ToDictionary ().Keys;
       foreach (char key in keys) WriteLine ($"{key} {frequencyTable[key]}");
