@@ -33,7 +33,7 @@ class Program {
                $"{1 << (i + 1)}? (Y/N) ");// 1<<(i+1) is the divisor to isolate that bit
             input = ReadKey ().Key;
             if (input is ConsoleKey.Y or ConsoleKey.N) break;
-            Write ("\nInvalid input");
+            WriteLine ("\nInvalid input");
          }
          if (input == ConsoleKey.Y) {
             secretNum |= 1 << i;
