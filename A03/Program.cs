@@ -24,9 +24,11 @@ class Program {
       WriteLine ($"----\n{total,3} total");
    }
 
+   // Returns whether the given word is valid
    static bool IsValid (string word) => word.Length >= 4 && word.Contains ('U') &&
          word.All (sLetters.Contains);
 
+   // Return the score, word and whether it is a pangram
    static (int Score, string Word, bool IsPangram) GetScore (string word) {
       bool pangram = sLetters.All (word.Contains);
       return ((word.Length > 4 ? word.Length : 1) + (pangram ? 7 : 0), word, pangram);
