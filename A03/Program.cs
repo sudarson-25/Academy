@@ -13,8 +13,8 @@ class Program {
    static void Main () {
       int total = 0;
       string[] words = File.ReadAllLines ("C:/etc/words.txt");
-      var results = words.Where (IsValid).Select (GetScore).OrderByDescending (a => a.Score)
-         .ThenBy (a => a.Word);
+      var results = words.Select (word => word.Trim ().ToUpper ()).Where (IsValid)
+         .Select (GetScore).OrderByDescending (a => a.Score).ThenBy (a => a.Word);
       foreach (var result in results) {
          if (result.IsPangram) ForegroundColor = ConsoleColor.Green;
          WriteLine ($"{result.Score,3}. {result.Word}");
