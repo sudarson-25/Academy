@@ -12,9 +12,8 @@ namespace A03;
 class Program {
    static void Main () {
       int total = 0;
-      string[] words = File.ReadAllLines ("C:/etc/words.txt");
-      var results = words.Select (word => word.Trim ().ToUpper ()).Where (IsValid)
-         .Select (GetScore).OrderByDescending (a => a.Score).ThenBy (a => a.Word);
+      var results = File.ReadAllLines ("C:/etc/words.txt").Select (word => word.Trim ().ToUpper ())
+         .Where (IsValid).Select (GetScore).OrderByDescending (a => a.Score).ThenBy (a => a.Word);
       foreach (var result in results) {
          if (result.IsPangram) ForegroundColor = ConsoleColor.Green;
          WriteLine ($"{result.Score,3}. {result.Word}");
@@ -25,8 +24,8 @@ class Program {
    }
 
    // Returns whether the given word is valid
-   static bool IsValid (string word) => word.Length >= 4 && word.Contains ('U') &&
-         word.All (sLetters.Contains);
+   static bool IsValid (string word) =>
+      word.Length >= 4 && word.Contains ('U') && word.All (sLetters.Contains);
 
    // Return the score, word and whether it is a pangram
    static (int Score, string Word, bool IsPangram) GetScore (string word) {
