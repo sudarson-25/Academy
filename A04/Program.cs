@@ -9,13 +9,8 @@ namespace A04;
 
 class Program {
    static void Main () {
-      string text = File.ReadAllText ("c:/etc/words.txt");
-      Dictionary<char, int> frequencyTable = [];
-      text = text.ToUpper ();
-      foreach (char ch in text)
-         if (char.IsLetter (ch)) frequencyTable[ch] = frequencyTable.GetValueOrDefault (ch) + 1;
-      var keys = frequencyTable.OrderByDescending (pair => pair.Value).Take (7)
-         .ToDictionary ().Keys;
-      foreach (char key in keys) Console.WriteLine ($"{key} {frequencyTable[key]}");
+      var frequencyTable = File.ReadAllText ("c:/etc/words.txt").ToUpper ().Where (char.IsLetter)
+         .GroupBy (ch => ch).OrderByDescending (g => g.Count ()).Take (7);
+      foreach (var group in frequencyTable) Console.WriteLine ($"{group.Key} {group.Count ()}");
    }
 }
