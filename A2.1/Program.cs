@@ -22,7 +22,10 @@ class Program {
       while (left <= right) {
          guess = (right + left) / 2;
          WriteLine ($"\nComputer's guess: {guess}");
-         if (guess == secretNum) break;
+         if (guess == secretNum) {
+            WriteLine ("Computer guessed correctly");
+            return;
+         }
          ConsoleKey input;
          while (true) {
             Write ("User's response (H)igh / (L)ow: ");
@@ -33,7 +36,6 @@ class Program {
          if (input is ConsoleKey.L) left = guess + 1;
          else right = guess - 1;
       }
-      WriteLine (guess == secretNum ? "Computer guessed correctly" : $"\nGame over!" +
-         $"\nThe secret number is {secretNum}");
+      WriteLine ($"\nGame over!\nThe secret number is {secretNum}");
    }
 }
