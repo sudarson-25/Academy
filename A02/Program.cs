@@ -16,4 +16,4 @@ for (i = 0; i < 7; i++) {
       WriteLine ($"Your guess is too {(guess > num ? "high" : "low")}");
    } else WriteLine ("Invalid input!");
 }
-if (i == 7) WriteLine ("Maximum attempts reached!");
+if (i == 7) WriteLine ($"Maximum attempts reached!\nThe correct number is {num}");
