@@ -32,8 +32,8 @@ class Program {
          ConsoleKey input;
          while (true) {
             // 1<<i gives the value of the current bit position
-            Write ($"\nIs the remainder >= {1 << i} when the secret number is divided by ");
-            Write ($"{1 << (i + 1)}? (Y/N) ");// 1<<(i+1) is the divisor to isolate that bit
+            // 1<<(i+1) is the divisor to isolate that bit
+            Write ($"\nIs remainder ≥ {1 << i} when secret number is ÷ by {1 << (i + 1)}? (Y/N) ");
             input = ReadKey ().Key;
             if (input is ConsoleKey.Y or ConsoleKey.N) break;
             Write ("\nInvalid input");
