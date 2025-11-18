@@ -14,13 +14,13 @@ class Program {
       int total = 0;
       var results = File.ReadAllLines ("C:/etc/words.txt").Select (word => word.Trim ().ToUpper ())
          .Where (IsValid).Select (GetScore).OrderByDescending (a => a.Score).ThenBy (a => a.Word);
-      foreach (var result in results) {
-         if (result.IsPangram) ForegroundColor = ConsoleColor.Green;
-         WriteLine ($"{result.Score,3}. {result.Word}");
+      foreach (var (Score, Word, IsPangram) in results) {
+         if (IsPangram) ForegroundColor = ConsoleColor.Green;
+         WriteLine ($"{Score, 3}. {Word}");
          ResetColor ();
-         total += result.Score;
+         total += Score;
       }
-      WriteLine ($"----\n{total,3} total");
+      WriteLine ($"----\n{total, 3} total");
    }
 
    // Returns whether the given word is valid
