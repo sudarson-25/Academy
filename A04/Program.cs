@@ -9,8 +9,8 @@ namespace A04;
 
 class Program {
    static void Main () {
-      var frequencyTable = File.ReadAllText ("c:/etc/words.txt").ToUpper ().Where (char.IsLetter)
-         .GroupBy (ch => ch).OrderByDescending (g => g.Count ()).Take (7);
+      var frequencyTable = File.ReadAllText ("c:/etc/words.txt").Where (char.IsLetter)
+         .GroupBy (char.ToUpper).OrderByDescending (g => g.Count ()).Take (7);
       foreach (var group in frequencyTable) Console.WriteLine ($"{group.Key} {group.Count ()}");
    }
 }
