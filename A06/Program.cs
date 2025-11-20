@@ -68,10 +68,9 @@ class Program {
 
    // Prints all the valid solutions of queens on the chessboard.
    static void PrintSolutions (List<int[]> solutions) {
-      Clear ();
       OutputEncoding = new System.Text.UnicodeEncoding ();
       for (int i = 0; i < solutions.Count; i++) {
-         CursorLeft = CursorTop = 0;
+         Clear ();
          WriteLine ($"Solution: {i + 1}\n┏━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┳━━━━┓");
          for (int row = 0; row < N; row++) {
             Write ("┃");
@@ -79,8 +78,13 @@ class Program {
                Write (solutions[i][col] == row ? $" ♛  ┃" : $"    ┃");
             if (row < N - 1) WriteLine ("\n┣━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫");
          }
-         WriteLine ("\n┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛");
-         ReadKey ();
+         WriteLine ("\n┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛\n-> (Next)\n<- (Previous)" +
+            "\nPress any other key to exit printing solutions");
+         var key = ReadKey (true);
+         if (key.Key is ConsoleKey.LeftArrow) i -= i > 0 ? 2 : 1;
+         else if (key.Key is ConsoleKey.RightArrow) {
+            if (i == solutions.Count - 1) i--;
+         } else break;
       }
    }
 
