@@ -17,11 +17,10 @@ class Program {
             WriteLine ("Invalid input!\n"); continue;
          }
          sSolns.Clear ();
-         if (choice == 1) PlaceQueen (0, false);
-         else PlaceQueen (0, true);
+         PlaceQueen (0, choice != 1);
          PrintSolutions (sSolns);
          WriteLine ("Do you want to continue (y/n)?");
-         if (ReadKey (true).Key is not ConsoleKey.Y) break;
+         if (ReadKey (true).Key != ConsoleKey.Y) break;
          Clear ();
       }
    }
@@ -75,11 +74,11 @@ class Program {
          for (int row = 0; row < N; row++) {
             Write ("┃");
             for (int col = 0; col < N; col++)
-               Write (solutions[i][col] == row ? $" ♛  ┃" : $"    ┃");
+               Write (solutions[i][col] == row ? " ♛  ┃" : $"    ┃");
             if (row < N - 1) WriteLine ("\n┣━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫");
          }
-         WriteLine ("\n┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛\n-> (Next)\n<- (Previous)" +
-            "\nPress any other key to exit printing solutions");
+         WriteLine ("\n┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛\n-> (Next)\n<- (Previous)");
+         WriteLine ("\nPress any other key to exit printing solutions");
          var key = ReadKey (true);
          if (key.Key is ConsoleKey.LeftArrow) i -= i > 0 ? 2 : 1;
          else if (key.Key is ConsoleKey.RightArrow) {
