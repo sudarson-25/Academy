@@ -74,7 +74,7 @@ class Program {
          for (int row = 0; row < N; row++) {
             Write ("┃");
             for (int col = 0; col < N; col++)
-               Write (solutions[i][col] == row ? " ♛  ┃" : $"    ┃");
+               Write (solutions[i][col] == row ? " ♛  ┃" : "    ┃");
             if (row < N - 1) WriteLine ("\n┣━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━╋━━━━┫");
          }
          WriteLine ("\n┗━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┻━━━━┛\n-> (Next)\n<- (Previous)");
