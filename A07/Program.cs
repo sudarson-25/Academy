@@ -41,14 +41,13 @@ class Program {
 
    // Tries to parse string base value into double
    static bool TryParseBase (string basePart, out double b) {
-      bool hasDecimal = false;
-      double decimalFactor = 0.1;
-      int i = 0;
-      if (basePart.EndsWith ('.')) {
+      if (basePart.StartsWith ('.') || basePart.EndsWith ('.')) {
          b = double.NaN;
          return false;
       }
-      if (basePart.StartsWith ('.')) { hasDecimal = true; i++; }
+      bool hasDecimal = false;
+      int i = 0;
+      double decimalFactor = 0.1;
       b = 0.0;
       while (i < basePart.Length) {
          char ch = basePart[i];
@@ -75,14 +74,24 @@ class Program {
 
    // Tries to parse string exponent value into double
    static bool TryParseExp (string expPart, out double e) {
-      e = 0;
+      if (expPart.Length == 0) {
+         e = double.NaN;
+         return false;
+      }
       int i = 0;
       bool isNegative = expPart[i] == '-';
       if (expPart[i] == '+' || isNegative) i++;
-      if (i == expPart.Length) return false;
+      if (i == expPart.Length) {
+         e = double.NaN;
+         return false;
+      }
+      e = 0;
       while (i < expPart.Length) {
          char ch = expPart[i++];
-         if (ch < '0' || ch > '9') return false;
+         if (ch < '0' || ch > '9') {
+            e = double.NaN;
+            return false;
+         }
          e = e * 10 + (ch - '0');
       }
       if (isNegative) e *= -1;
