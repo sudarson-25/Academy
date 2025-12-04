@@ -2,6 +2,7 @@
   <Project Path="A04/A04.csproj" />
   <Project Path="A03/A03.csproj" />
   <Project Path="A2.2/A2.2.csproj" />
+  <Project Path="A09/A09.csproj" />
   <Project Path="A2.1/A2.1.csproj" />
   <Project Path="A02/A02.csproj" />
 </Solution>
