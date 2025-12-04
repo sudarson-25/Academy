@@ -45,7 +45,7 @@ class TQueue<T> {
    }
 
    public T Dequeue () {
-      if (startIdx == 0 && endIdx == 0) throw new Exception ("Queue empty!");
+      if (IsEmpty ()) throw new Exception ("Queue empty!");
       if (startIdx == mData.Length - 1) {
          startIdx = 0;
          return mData[^1];
@@ -53,8 +53,10 @@ class TQueue<T> {
       return mData[startIdx++];
    }
 
+   public bool IsEmpty () => startIdx == 0 && endIdx == 0;
+
    public int Count () {
-      if (startIdx == 0 && endIdx == 0) return 0;
+      if (IsEmpty ()) return 0;
       if (startIdx == endIdx) return mData.Length;
       if (endIdx > startIdx) return endIdx - startIdx;
       return mData.Length - startIdx + endIdx;
