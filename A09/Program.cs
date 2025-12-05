@@ -17,9 +17,7 @@ class Program {
             t.Enqueue (i);
             WriteLine ($"Added: {i}\nCount: {t.Count ()}");
          }
-         for (int i = 0; i < 4; i++) {
-            WriteLine ($"Removed: {t.Dequeue ()}\nCount: {t.Count ()}");
-         }
+         for (int i = 0; i < 4; i++) WriteLine ($"Removed: {t.Dequeue ()}\nCount: {t.Count ()}");
          for (int i = 0; i < 8; i++) {
             t.Enqueue (i);
             WriteLine ($"Added: {i}\nCount: {t.Count ()}");
