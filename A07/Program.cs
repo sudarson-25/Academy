@@ -16,53 +16,30 @@ class Program {
          $"Parsed value: {result}" : "Invalid input!");
    }
 
-   // Tries to parse string value into double
+   // Tries to parse the input string into a double value
    static bool TryParse (string input, out double result) {
       result = double.NaN;
-      if (input.Length == 0) return false;
-      int count = 0;
-      // Filters those inputs having successive signs
-      while ((input[count] is '+' or '-') && (count < input.Length)) {
-         count++;
-         if (count > 1) return false;
-      }
+      if (input.Length == 0 || input.Count (c => c is '+' or '-') > 1) return false;
       input = GetAbsoluteValue (input, out bool isNegative);
       if (input.Length == 0) return false;
       int eIndex = input.IndexOf ('e');
       bool hasIndex = eIndex > 0;
       string basePart = hasIndex ? input[..eIndex] : input,
          expPart = hasIndex ? input[(eIndex + 1)..] : "0";
-      if (basePart.StartsWith ('.') || basePart.EndsWith ('.')) return false;
-      int i = 0, dotIndex = -1;
-      while (i < basePart.Length) {
-         char ch = basePart[i];
-         if (ch == '.') {
-            if (dotIndex != -1) return false;
-            dotIndex = i++;
-            continue;
-         }
-         if (ch < '0' || ch > '9') return false;
-         i++;
-      }
-      if (expPart.Length == 0) return false;
+      if (basePart.StartsWith ('.') || basePart.EndsWith ('.') ||
+         basePart.Count (c => c == '.') > 1 || expPart.Length == 0) return false;
+      foreach (char ch in basePart) if (ch != '.' && !char.IsDigit (ch)) return false;
       expPart = GetAbsoluteValue (expPart, out bool isExpNegative);
-      if (expPart.Length == 0) return false;
-      int j = 0;
-      while (j < expPart.Length) {
-         char ch = expPart[j++];
-         if (ch < '0' || ch > '9') return false;
-      }
-      double baseValue = GetBaseValue (basePart, dotIndex);
-      int expValue = GetExpValue (expPart, isExpNegative);
-      result = baseValue * Math.Pow (10, expValue) * (isNegative ? -1 : 1);
+      if (expPart.Length == 0 || !expPart.All (char.IsDigit)) return false;
+      result = GetDouble (basePart, expPart, isNegative, isExpNegative);
       return true;
    }
 
-   // Tries to parse string base value into double
-   static double GetBaseValue (string basePart, int dotIndex) {
-      int i = 0;
-      double decimalFactor = 0.1, b = 0.0;
-      while (i < basePart.Length) {
+   // Converts the base and exponent parts into double value
+   static double GetDouble (string basePart, string expPart, bool isNegative, bool isExpNegative) {
+      int dotIndex = basePart.IndexOf ('.');
+      double decimalFactor = 0.1, b = 0;
+      for (int i = 0; i < basePart.Length; i++) {
          int digit = basePart[i] - '0';
          if (i == dotIndex) { i++; continue; }
          if (dotIndex == -1 || i < dotIndex) b = b * 10 + digit;
@@ -70,22 +47,16 @@ class Program {
             b += digit * decimalFactor;
             decimalFactor /= 10;
          }
-         i++;
       }
-      return b;
-   }
-
-   // Tries to parse string exponent value into double
-   static int GetExpValue (string expPart, bool isExpNegative) {
       int e = 0;
       foreach (char ch in expPart) e = e * 10 + (ch - '0');
       if (isExpNegative) e = -e;
-      return e;
+      return b * Math.Pow (10, e) * (isNegative ? -1 : 1);
    }
 
+   // Returns the absolute value of the input string and indicates if it was negative
    static string GetAbsoluteValue (string input, out bool isNegative) {
       isNegative = input[0] == '-';
-      if (input[0] == '+' || isNegative) return input[1..];
-      return input;
+      return input[0] == '+' || isNegative ? input[1..] : input;
    }
 }
