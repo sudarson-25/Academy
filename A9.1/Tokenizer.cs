@@ -1,26 +1,29 @@
-﻿namespace Eval;
+﻿namespace A9._1;
 
-class Tokenizer {
-   public Tokenizer (Evaluator eval, string text) {
-      mText = text; mN = 0; mEval = eval;
-   }
-   readonly Evaluator mEval;  // The evaluator that owns this 
-   readonly string mText;     // The input text we're parsing through
-   int mN;                    // Position within the text
-
+class Tokenizer (Evaluator eval, string text) {
    public Token Next () {
       while (mN < mText.Length) {
          char ch = char.ToLower (mText[mN++]);
+         Token? prevToken;
          switch (ch) {
             case ' ' or '\t': continue;
-            case (>= '0' and <= '9') or '.': return GetNumber ();
-            case '(' or ')': return new TPunctuation (ch);
-            case '+' or '-' or '*' or '/' or '^' or '=': return new TOpArithmetic (mEval, ch);
-            case >= 'a' and <= 'z': return GetIdentifier ();
-            default: return new TError ($"Unknown symbol: {ch}");
+            case (>= '0' and <= '9') or '.':
+               prevToken = GetNumber ();
+               break;
+            case '(' or ')':
+               mEval.BasePriority += ch == '(' ? 10 : -10;
+               prevToken = new TPunctuation (ch); break;
+            case '+' or '-':
+               prevToken = (mPrev is null || mPrev is TOperator or TPunctuation { Punct: '(' })
+                   ? new TOpUnary (mEval, ch) : new TOpArithmetic (mEval, ch); break;
+            case '*' or '/' or '^' or '=': prevToken = new TOpArithmetic (mEval, ch); break;
+            case >= 'a' and <= 'z': prevToken = GetIdentifier (); break;
+            default: prevToken = new TError ($"Unknown symbol: {ch}"); break;
          }
+         mPrev = prevToken;
+         return prevToken;
       }
-      return new TEnd ();
+      return mPrev is TOpArithmetic or TOpUnary or TOpFunction ? new TError ("Invalid Operation") : new TEnd ();
    }
 
    Token GetIdentifier () {
@@ -40,7 +43,7 @@ class Tokenizer {
       int start = mN - 1;
       while (mN < mText.Length) {
          char ch = mText[mN++];
-         if (ch is (>= '0' and <= '9') or '.') continue;
+         if (ch is >= '0' and <= '9' or '.') continue;
          mN--; break;
       }
       // Now, mN points to the first character of mText that is not part of the number
@@ -48,4 +51,9 @@ class Tokenizer {
       if (double.TryParse (sub, out double f)) return new TLiteral (f);
       return new TError ($"Invalid number: {sub}");
    }
+
+   Token? mPrev;
+   int mN = 0;                    // Position within the text
+   readonly Evaluator mEval = eval;  // The evaluator that owns this
+   readonly string mText = text;     // The input text we're parsing through
 }
