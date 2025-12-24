@@ -11,13 +11,31 @@ namespace A07;
 
 class Program {
    static void Main () {
+      Dictionary<string, double> validExp = new () { {"abc", double.NaN}, {".34", double.NaN},
+         {"45.", double.NaN}, {".e2", double.NaN}, {"12.", double.NaN}, {"0", 0}, {"7", 7},
+         {".1", double.NaN}, {"08.6", 8.6}, {"7897", 7897}, {"00990.009", 990.009},
+         {"-7.78", -7.78}, {"-7.78e1", -77.8}, {"-7E2", -700}, {"+778e0", 778}, {"8e-3", 0.008},
+         {"4e2.3", double.NaN}, {"+4e2.3", double.NaN}, {"0.003e", double.NaN}, {"x", double.NaN},
+         {"", double.NaN}, {"8e9.- 3", double.NaN}, {"8 - .7e3", double.NaN},
+         {"3.4e4 - .3", double.NaN}, {"3.4e4 + .3", double.NaN}, {"-35.- 354e1", double.NaN},
+         {"e1", double.NaN}, {"1e", double.NaN}, {"1jkse", double.NaN}, {"1++$6e", double.NaN} };
+      double result;
+      foreach (var exp in validExp) {
+         WriteLine ($"Input: {exp.Key}\nExpected: {exp.Value}");
+         TryParse (exp.Key, out result);
+         ForegroundColor = exp.Value == result || double.IsNaN (exp.Value) && double.IsNaN (result)
+            ? ConsoleColor.Green : ConsoleColor.Red;
+         WriteLine ($"Result: {result}\n");
+         ResetColor ();
+      }
       Write ($"Enter the string to be parsed: ");
-      WriteLine (TryParse ((ReadLine () ?? "").Trim ().ToLower (), out double result) ?
+      WriteLine (TryParse ((ReadLine () ?? ""), out result) ?
          $"Parsed value: {result}" : "Invalid input!");
    }
 
    // Tries to parse the input string into a double value
    static bool TryParse (string input, out double result) {
+      input = input.Trim ().ToLower ();
       result = double.NaN;
       if (input.Length == 0 || input.Count (c => c is '+' or '-') > 1) return false;
       input = GetAbsoluteValue (input, out bool isNegative);
@@ -41,7 +59,7 @@ class Program {
       double decimalFactor = 0.1, b = 0;
       for (int i = 0; i < basePart.Length; i++) {
          int digit = basePart[i] - '0';
-         if (i == dotIndex) { i++; continue; }
+         if (i == dotIndex) continue;
          if (dotIndex == -1 || i < dotIndex) b = b * 10 + digit;
          else {
             b += digit * decimalFactor;
