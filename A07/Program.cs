@@ -20,16 +20,19 @@ class Program {
          {"3.4e4 - .3", double.NaN}, {"3.4e4 + .3", double.NaN}, {"-35.- 354e1", double.NaN},
          {"e1", double.NaN}, {"1e", double.NaN}, {"1jkse", double.NaN}, {"1++$6e", double.NaN} };
       double result;
+      Console.WriteLine ("--------Input---------|-----------Expected-----------|--------Results-" +
+         "-------|");
       foreach (var exp in validExp) {
-         WriteLine ($"Input: {exp.Key}\nExpected: {exp.Value}");
          TryParse (exp.Key, out result);
+         Console.Write ($" {exp.Key.PadRight (21)}| {exp.Value,-29}| ");
          ForegroundColor = exp.Value == result || double.IsNaN (exp.Value) && double.IsNaN (result)
-            ? ConsoleColor.Green : ConsoleColor.Red;
-         WriteLine ($"Result: {result}\n");
+                     ? ConsoleColor.Green : ConsoleColor.Red;
+         Write ($"{result,-22}");
          ResetColor ();
+         WriteLine ("|");
       }
-      Write ($"Enter the string to be parsed: ");
-      WriteLine (TryParse ((ReadLine () ?? ""), out result) ?
+      Write ($"\nEnter the string to be parsed: ");
+      WriteLine (TryParse (ReadLine () ?? "", out result) ?
          $"Parsed value: {result}" : "Invalid input!");
    }
 
@@ -74,7 +77,8 @@ class Program {
 
    // Returns the absolute value of the input string and indicates if it was negative
    static string GetAbsoluteValue (string input, out bool isNegative) {
-      isNegative = input[0] == '-';
-      return input[0] == '+' || isNegative ? input[1..] : input;
+      char zerothIdx = input[0];
+      isNegative = zerothIdx == '-';
+      return zerothIdx == '+' || isNegative ? input[1..] : input;
    }
 }
