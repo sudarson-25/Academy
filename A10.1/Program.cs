@@ -70,7 +70,7 @@ class TDoubleEndedQueue<T> {
 
    // Removes and returns the element at the rear of the queue
    public T RearDequeue () {
-      if (IsEmpty ()) throw new Exception ("Queue empty!");
+      if (IsEmpty ()) throw new Exception ("Error: Can't dequeue from an empty queue!");
       return mData[--endIdx];
    }
 
@@ -86,12 +86,12 @@ class TDoubleEndedQueue<T> {
          startIdx = 0; endIdx = i; mData = temp;
       }
       mData[endIdx++] = a;
-      isFull = startIdx == endIdx;
+      isFull = (endIdx - startIdx == 0 || endIdx - startIdx == mData.Length);
    }
 
    // Removes and returns the element at the front of the queue
    public T FrontDequeue () {
-      if (IsEmpty ()) throw new Exception ("Queue empty!");
+      if (IsEmpty ()) throw new Exception ("Error: Can't dequeue from an empty queue!");
       if (startIdx == mData.Length - 1) {
          startIdx = 0;
          return mData[^1];
@@ -105,15 +105,16 @@ class TDoubleEndedQueue<T> {
    // Returns the number of elements in the queue
    public int Count () {
       if (IsEmpty ()) return 0;
-      if (startIdx == endIdx) return mData.Length;
+      if (isFull) return mData.Length;
       if (endIdx > startIdx) return endIdx - startIdx;
       return mData.Length - startIdx + endIdx;
    }
 
    // Displays the elements in the queue from front to rear
    public void Display () {
+      if (IsEmpty ()) { WriteLine ("Queue Empty!\n"); return; }
       Write ("Queue: Front-> ");
-      if (endIdx < startIdx || isFull) {
+      if (endIdx <= startIdx) {
          for (int i = startIdx; i < mData.Length; i++) Write ($"{mData[i]} ");
          for (int i = 0; i < endIdx; i++) Write ($"{mData[i]} ");
       }
