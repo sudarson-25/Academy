@@ -24,7 +24,7 @@ class Program {
          "-------|");
       foreach (var exp in validExp) {
          TryParse (exp.Key, out result);
-         Console.Write ($" {exp.Key.PadRight (21)}| {exp.Value,-29}| ");
+         Console.Write ($" {exp.Key,-21}| {exp.Value,-29}| ");
          ForegroundColor = exp.Value == result || double.IsNaN (exp.Value) && double.IsNaN (result)
                      ? ConsoleColor.Green : ConsoleColor.Red;
          Write ($"{result,-22}");
