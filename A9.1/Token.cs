@@ -30,7 +30,7 @@ class TOpArithmetic : TOperator {
       Op = ch;
       Priority = sPriority[Op] + mEval.BasePriority;
    }
-   public char Op { get; set; }
+   public char Op { get; private set; }
    public override string ToString () => $"op:{Op}:{Priority}";
    static Dictionary<char, int> sPriority = new () {
       ['+'] = 1, ['-'] = 1, ['*'] = 2, ['/'] = 2, ['^'] = 3, ['='] = 4,
@@ -49,13 +49,13 @@ class TOpArithmetic : TOperator {
 
 class TOpUnary : TOperator {
    public TOpUnary (Evaluator eval, char ch) : base (eval) {
-      Op = ch;
-      Priority = 5 + mEval.BasePriority;
+      Unary = ch;
+      Priority = 6 + mEval.BasePriority;
    }
-   public char Op { get; private set; }
-   public override string ToString () => $"unaryOp:{Op}:{Priority}";
+   public char Unary { get; private set; }
+   public override string ToString () => $"unaryOp:{Unary}:{Priority}";
 
-   public double Evaluate (double f) => Op == '+' ? f : -f;
+   public double Evaluate (double f) => Unary == '+' ? f : -f;
 }
 
 class TOpFunction : TOperator {

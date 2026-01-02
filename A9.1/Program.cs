@@ -4,7 +4,7 @@ namespace A9._1;
 class Program {
    static void Main () {
       var eval = new Evaluator ();
-      Dictionary<string, double> validExp = new () {
+      Dictionary<string, double?> validExp = new () {
          { "-10 ^ 2", 100 }, { "a = 4", 4 }, { "b = 3.5", 3.5 }, { "a + b", 7.5 },
          { "asin sin 90", 90 }, { "atan tan 45", 45 }, { "sqrt 25", 5 }, { "log 1", 0 },
          { "-2 -2", -4 }, {"10/2+3", 8}, {"(+10+3)*2", 26}, {"(a+2) * a", 24 }, {"cos 0", 1 },
@@ -22,16 +22,19 @@ class Program {
          { "asin -1", -90 }, { "atan -1", -45 }, { "(atan -1)+45", 0 }, { "exp 1", 2.7182818285 },
          { "exp 1-2", .7182818285 }, { "exp(2-1)", 2.7182818285 }, { "exp -1", 0.3678794412 },
          { "sqrt -100", double.NaN }, { "log(-10+5)", double.NaN }, { "sin(sqrt-1)", double.NaN },
-         { "sqrt asin-1", double.NaN },{ "3 + * 5", 0 }, { "(4 + 6", 0 }, { "2 + abc", 0 },
-         { "6 *", 0 }, { "3 + 2 *", 0 }, { "5 * (3 + 2))", 0 }
+         { "sqrt asin-1", double.NaN },{ "3 + * 5", null }, { "(4 + 6", null }, { "2 + abc", null },
+         { "6 *", null }, { "3 + 2 *", null }, { "5 * (3 + 2))", null }
         };
       foreach (var text in validExp) {
          WriteLine ($"> {text.Key}");
          try {
-            WriteLine ($"Expected: {text.Value}");
             double result = eval.Evaluate (text.Key);
+            WriteLine ($"Expected: {text.Value}");
             ForegroundColor = ConsoleColor.Green;
-            if (Math.Abs (result - text.Value) > 1e-6) ForegroundColor = ConsoleColor.Red;
+            if (text.Value is not null && ((double.IsNaN ((double)text.Value) &&
+               !double.IsNaN (result)) || (!double.IsNaN ((double)text.Value) &&
+               double.IsNaN (result)) || Math.Abs (result - (double)text.Value) > 1e-6))
+               ForegroundColor = ConsoleColor.Red;
             WriteLine ($"Result  : {result}");
          } catch (Exception e) {
             ForegroundColor = ConsoleColor.Yellow;
