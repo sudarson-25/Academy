@@ -20,34 +20,31 @@ class Program {
    }
 
    // File path parser implemented as a state machine
-   // See Diagram.jpg for state diagram
+   // See file://Diagram.jpg for state diagram
    static (char, string, string, string) ParseFilePath (string input) {
       State s = A;
       Action none = () => { }, todo;
       char drive = '\0';
-      string firstFolder = "", file = "", extension = "";
+      string folders = "", file = "", extension = "";
       foreach (char ch in input.Trim () + '~') {
+         bool isUpper = char.IsAsciiLetterUpper (ch), isAlphabet = char.IsAsciiLetter (ch);
          (s, todo) = (s, ch) switch {
-            (A, >= 'A' and <= 'Z') => (B, () => { drive = ch; }),
+            (A, _) when isUpper => (B, () => { drive = ch; }),
             (B, ':') => (C, none),
             (C, '\\') => (D, none),
-            (D or E, >= 'A' and <= 'Z' or >= 'a' and <= 'z') => (E, () => { firstFolder += ch; }),
+            (D or E, _) when isAlphabet => (E, () => { folders += ch; }),
             (E, '\\') => (F, none),
-            (G, '\\') => (F, () => { file += ch; }),
-            (F or G, >= 'A' and <= 'Z' or >= 'a' and <= 'z') => (G, () => { file += ch; }),
+            (F or G, _) when isAlphabet => (G, () => file += ch),
+            (G, '\\') => (F, () => { folders += '\\' + file; file = string.Empty; }),
             (G, '.') => (H, () => { extension += ch; }),
-            (H or I, >= 'A' and <= 'Z' or >= 'a' and <= 'z') => (I, () => { extension += ch; }),
+            (H or I, _) when isAlphabet => (I, () => { extension += ch; }),
             (I, '~') => (J, none),
             _ => (Z, none),
          };
          todo ();
       }
-      if (s == J) {
-         int indexOfLastSlash = file.LastIndexOf ('\\');
-         string folders = firstFolder + '\\' + file[..indexOfLastSlash],
-            fileName = file[(indexOfLastSlash + 1)..];
-         return (drive, folders, fileName, extension);
-      } else throw new Exception ("Invalid input!");
+      if (s == J) return (drive, folders, file, extension);
+      throw new Exception ("Invalid input!");
    }
 }
 
