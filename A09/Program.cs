@@ -13,23 +13,20 @@ class Program {
    static void Main () {
       TQueue<int> t = new ();
       try {
-         for (int i = 0; i < 5; i++) {
-            t.Enqueue (i);
-            WriteLine ($"Added: {i}\nCount: {t.Count}");
-            t.Display ();
-         }
-         for (int i = 0; i < 5; i++) {
-            WriteLine ($"Removed: {t.Dequeue ()}\nCount: {t.Count}");
-            t.Display ();
-         }
-         for (int i = 0; i < 8; i++) {
-            t.Enqueue (i);
-            WriteLine ($"Added: {i}\nCount: {t.Count}");
-            t.Display ();
-         }
-         for (int i = 0; i < 8; i++) {
-            WriteLine ($"Removed: {t.Dequeue ()}\nCount: {t.Count}");
-            t.Display ();
+         var random = new Random ();
+         int tests = random.Next (0, 6);
+         for (int i = 0; i < tests; i++) {
+            int size = random.Next (0, 16);
+            for (int j = 0; j < size; j++) {
+               t.Enqueue (j);
+               WriteLine ($"Added: {j}\nCount: {t.Count}");
+               t.Display ();
+            }
+            size = random.Next (0, 16);
+            for (int j = 0; j < size; j++) {
+               WriteLine ($"Removed: {t.Dequeue ()}\nCount: {t.Count}");
+               t.Display ();
+            }
          }
       } catch (Exception e) {
          WriteLine (e.Message);
