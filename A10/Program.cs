@@ -29,15 +29,15 @@ class Program {
       foreach (char ch in input.Trim () + '~') {
          bool isUpper = char.IsAsciiLetterUpper (ch), isAlphabet = char.IsAsciiLetter (ch);
          (s, todo) = (s, ch) switch {
-            (A, _) when isUpper => (B, () => { drive = ch; }),
+            (A, _) when isUpper => (B, () => drive = ch),
             (B, ':') => (C, none),
             (C, '\\') => (D, none),
-            (D or E, _) when isAlphabet => (E, () => { folders += ch; }),
+            (D or E, _) when isAlphabet => (E, () => folders += ch),
             (E, '\\') => (F, none),
             (F or G, _) when isAlphabet => (G, () => file += ch),
             (G, '\\') => (F, () => { folders += '\\' + file; file = string.Empty; }),
-            (G, '.') => (H, () => { extension += ch; }),
-            (H or I, _) when isAlphabet => (I, () => { extension += ch; }),
+            (G, '.') => (H, () => extension += ch),
+            (H or I, _) when isAlphabet => (I, () => extension += ch),
             (I, '~') => (J, none),
             _ => (Z, none),
          };
