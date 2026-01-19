@@ -5,45 +5,46 @@ class Program {
    static void Main () {
       var eval = new Evaluator ();
       Dictionary<string, double?> validExp = new () {
-         { "-10 ^ 2", 100 }, { "a = 4", 4 }, { "b = 3.5", 3.5 }, { "a + b", 7.5 },
-         { "asin sin 90", 90 }, { "atan tan 45", 45 }, { "sqrt 25", 5 }, { "log 1", 0 },
-         { "-2 -2", -4 }, {"10/2+3", 8}, {"(+10+3)*2", 26}, {"(a+2) * a", 24 }, {"cos 0", 1 },
-         {"exp 2", 7.3890560989 }, {"cos acos 0", 0}, { "10 -2 -2", 6 }, { "---5", -5 },
-         {"-5+10", 5 }, { "-2-4", -6 }, { "---4+5--2+3", 6 }, { "(2+3)*-4", -20 },
-         { "(2+3)*+5", 25 }, { "-4*(3+5)", -32 }, { "-4+5--8", 9 },{ "-4+5-(-8)", 9 },
-         { "10^(-4+2)", .01 }, { "-10-10^2", -110 }, { "---4+5--6-2", 5 },
-         {"sin 45", 0.7071067812 }, {"sin -45", -0.7071067812 }, {"-sin 45", -0.7071067812 },
-         { "cos 45", 0.7071067812 }, { "cos -45", 0.7071067812 }, {"tan 45", 1.0 },
-         {"sin(45+45)", 1.0 }, {"(sin 90)*2", 2 }, {"sin --90", 1.0 }, {"log 10", 2.302585093 },
-         { "sqrt 100", 10 }, { "sqrt(10^2)", 10 }, { "(sqrt 100) - 10", 0 },
-         { "(tan 45)+10-20", -9 }, { "asin 1", 90 }, { "acos 0", 90 },
-         { "(log 10)+5", 7.302585093 }, { "log(10+5)", 2.7080502011 }, { "(sin 90)--1", 2 },
-         { "(sin -90)--1", 0 }, { "sqrt(90+10)", 10 }, { "sqrt(110-10)", 10 }, { "atan 1", 45 },
-         { "asin -1", -90 }, { "atan -1", -45 }, { "(atan -1)+45", 0 }, { "exp 1", 2.7182818285 },
-         { "exp 1-2", .7182818285 }, { "exp(2-1)", 2.7182818285 }, { "exp -1", 0.3678794412 },
-         { "sqrt -100", double.NaN }, { "log(-10+5)", double.NaN }, { "sin(sqrt-1)", double.NaN },
-         { "sqrt asin-1", double.NaN },{ "3 + * 5", null }, { "(4 + 6", null }, { "2 + abc", null },
-         { "6 *", null }, { "3 + 2 *", null }, { "5 * (3 + 2))", null }
-        };
+         { "-10^2", 100 }, { "a=4", 4 }, { "b=3.5", 3.5 }, { "a+b", 7.5 },
+         { "asin sin90", 90 }, { "atan tan45", 45 }, { "sqrt25", 5 }, { "log1", 0 },
+         { "-2-2", -4 }, { "10/2+3", 8 }, { "(+10+3)*2", 26 }, { "(a+2)*a", 24 }, { "cos0", 1 },
+         { "exp2", 7.3890560989 }, { "cos acos0", 0 }, { "10-2-2", 6 }, { "---5", -5 },
+         { "-5+10", 5 }, { "-2-4", -6 }, { "---4+5--2+3", 6 }, { "(2+3)*-4", -20 },
+         { "(2+3)*+5", 25 }, { "-4*(3+5)", -32 }, { "-4+5--8", 9 }, { "-4+5-(-8)", 9 },
+         { "10^(-4+2)", 0.01 }, { "-10-10^2", -110 }, { "---4+5--6-2", 5 },
+         { "sin45", 0.7071067812 }, { "sin-45", -0.7071067812 }, { "-sin45", -0.7071067812 },
+         { "cos45", 0.7071067812 }, { "cos-45", 0.7071067812 }, { "tan45", 1.0 },
+         { "sin(45+45)", 1.0 }, { "(sin90)*2", 2 }, { "sin--90", 1.0 }, { "log10", 2.302585093 },
+         { "sqrt100", 10 }, { "sqrt(10^2)", 10 }, { "(sqrt100)-10", 0 },
+         { "(tan45)+10-20", -9 }, { "asin1", 90 }, { "acos0", 90 },
+         { "(log10)+5", 7.302585093 }, { "log(10+5)", 2.7080502011 }, { "(sin90)--1", 2 },
+         { "(sin-90)--1", 0 }, { "sqrt(90+10)", 10 }, { "sqrt(110-10)", 10 }, { "atan1", 45 },
+         { "asin-1", -90 }, { "atan-1", -45 }, { "(atan-1)+45", 0 }, { "exp1", 2.7182818285 },
+         { "exp1-2", 0.7182818285 }, { "exp(2-1)", 2.7182818285 }, { "exp-1", 0.3678794412 },
+         { "sqrt-100", double.NaN }, { "log(-10+5)", double.NaN }, { "sin(sqrt-1)", double.NaN },
+         { "sqrt asin-1", double.NaN }, { "3+*5", null }, { "(4+6", null }, { "2+abc", null },
+         { "6*", null }, { "3+2*", null }, { "5*(3+2))", null }
+         };
+      ForegroundColor = ConsoleColor.Green;
+      WriteLine ("Running the tests----------------");
+      ResetColor ();
       foreach (var text in validExp) {
-         WriteLine ($"> {text.Key}");
          try {
             double result = eval.Evaluate (text.Key);
-            WriteLine ($"Expected: {text.Value}");
-            ForegroundColor = ConsoleColor.Green;
             if (text.Value is not null && ((double.IsNaN ((double)text.Value) &&
                !double.IsNaN (result)) || (!double.IsNaN ((double)text.Value) &&
                double.IsNaN (result)) || Math.Abs (result - (double)text.Value) > 1e-6))
                ForegroundColor = ConsoleColor.Red;
-            WriteLine ($"Result  : {result}");
+            Write ($"{text.Key}={result}  ");
          } catch (Exception e) {
             ForegroundColor = ConsoleColor.Yellow;
-            WriteLine (e.Message);
+            Write ($"{text.Key} {e.Message}  ");
          }
          ResetColor ();
       }
+      WriteLine ();
       for (; ; ) {
-         Write ("> ");
+         Write ("\nEnter your input: ");
          string text = ReadLine () ?? "";
          if (text == "exit") break;
          try {
