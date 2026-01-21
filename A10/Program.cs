@@ -12,11 +12,49 @@ namespace A10;
 
 class Program {
    static void Main () {
-      try {
-         (char drive, string folders, string file, string extension) =
-            ParseFilePath ("C:\\surprise\\folder\\sdgsg\\sgsg\\readme.txt");
-         WriteLine ($"Drive: {drive}\nFolders: {folders}\nFile: {file}\nExtension: {extension}");
-      } catch (Exception e) { WriteLine (e.Message); }
+      Dictionary<string, (char?, string?, string?, string?)> tests = new () {
+         {@"C:\surprise\folder\sdgsg\sgsg\readme.txt", ('C', @"surprise\folder\sdgsg\sgsg",
+         "readme", ".txt")}, { @"Cz:\abc\def\r.txt", (null, null, null, null) },
+         { @"C:\Readme.txt", (null, null, null, null) },
+         { @"C:\abc\.bcf", (null, null, null, null) },
+         { @"C:\abc\bcf.", (null, null, null, null) }, { @"Readme.txt", (null, null, null, null) },
+         { @"C:\abc\def", (null, null, null, null) }, { @"C:\abc:d", (null, null, null, null) },
+         { @"\abcd\Readme.txt", (null, null, null, null) }, { "", (null, null, null, null) },
+         { @"C:\ab.c\def\r.txt", (null, null, null, null) },
+         { @".\abc", (null, null, null, null) }, { @"..abc", (null, null, null, null) },
+         { @"abc", (null, null, null, null) }, { @"C:\abc6\def\r.txt", (null, null, null, null) },
+         { @"C:\abc\def\r.txt.txt", (null, null, null, null) },
+         { @"C:\PROGRAM\DATA\MSOFFICE", (null, null, null, null) },
+         { @"C:\PROGRAM\DATA", (null, null, null, null) },
+         { @"C:\PROGRAM", (null, null, null, null) },
+         { @"\PROGRAM\DATA\MSOFFICE\EXCEL", (null, null, null, null) },
+         { @"C\PROGRAM\DATA\MSOFFICE\EXCEL", (null, null, null, null) },
+         { @"PROGRAM", (null, null, null, null) },
+         { @"C:PROGRAM\DATA\MSOFFICE\EXCEL", (null, null, null, null) },
+         { @"G:\adc\def\ghi\jkl.cs", ('G', @"adc\def\ghi", "jkl", ".cs") }};
+      WriteLine ("Running the test cases-----------\n");
+      foreach (string test in tests.Keys) {
+         try {
+            (char drive, string folders, string file, string extension) = ParseFilePath (test);
+            if ((drive, folders, file, extension) == tests[test]) {
+               ForegroundColor = ConsoleColor.Green;
+               WriteLine ($"Drive: {drive}\nFolders: {folders}\nFile: {file}\nExtension: {extension}\n");
+            } else {
+               ForegroundColor = ConsoleColor.Red;
+               WriteLine ("Failed\n");
+            }
+            ResetColor ();
+         } catch (Exception e) {
+            ForegroundColor = ConsoleColor.Yellow;
+            WriteLine ($"{e.Message}\n");
+            ResetColor ();
+         }
+      }
+      Write ("Enter a file path: ");
+      string? input;
+      do input = ReadLine (); while (input == null);
+      (char drive1, string folders1, string file1, string extension1) = ParseFilePath (input);
+      WriteLine ($"Drive: {drive1}\nFolders: {folders1}\nFile: {file1}\nExtension: {extension1}\n");
    }
 
    // File path parser implemented as a state machine
