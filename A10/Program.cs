@@ -34,11 +34,12 @@ class Program {
          { @"G:\adc\def\ghi\jkl.cs", ('G', @"adc\def\ghi", "jkl", ".cs") }};
       WriteLine ("Running the test cases-----------\n");
       foreach (string test in tests.Keys) {
+         Write ($"{test}: ");
          try {
             (char drive, string folders, string file, string extension) = ParseFilePath (test);
             if ((drive, folders, file, extension) == tests[test]) {
                ForegroundColor = ConsoleColor.Green;
-               WriteLine ($"Drive: {drive}\nFolders: {folders}\nFile: {file}\nExtension: {extension}\n");
+               WriteLine ($"\nDrive: {drive}\nFolders: {folders}\nFile: {file}\nExtension: {extension}\n");
             } else {
                ForegroundColor = ConsoleColor.Red;
                WriteLine ("Failed\n");
