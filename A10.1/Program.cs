@@ -3,8 +3,7 @@
 // Copyright (c) Metamation India.
 // ------------------------------------------------------------------
 // Program.cs
-// Program to implement a generic double ended queue of T, using an array as the underlying storage
-// structure
+// Program to implement a generic double ended circular queue of T
 // ------------------------------------------------------------------------------------------------
 using static System.Console;
 
@@ -14,27 +13,25 @@ class Program {
    static void Main () {
       TDoubleEndedQueue<int> t = new ();
       try {
-         for (int i = 0; i < 5; i++) {
-            t.RearEnqueue (i);
-            WriteLine ($"RearAdded: {i}\nCount: {t.Count ()}");
-            t.Display ();
-            t.FrontEnqueue (i);
-            WriteLine ($"FrontAdded: {i}\nCount: {t.Count ()}");
-            t.Display ();
-         }
-         for (int i = 0; i < 5; i++) {
-            WriteLine ($"FrontRemoved: {t.FrontDequeue ()}\nCount: {t.Count ()}");
-            t.Display ();
-            WriteLine ($"RearRemoved: {t.RearDequeue ()}\nCount: {t.Count ()}");
-            t.Display ();
-         }
-         for (int i = 0; i < 8; i++) {
-            t.RearEnqueue (i);
-            WriteLine ($"RearAdded: {i}\nCount: {t.Count ()}");
-            t.Display ();
-            t.FrontEnqueue (i);
-            WriteLine ($"FrontAdded: {i}\nCount: {t.Count ()}");
-            t.Display ();
+         var random = new Random ();
+         int tests = random.Next (0, 6);
+         for (int i = 0; i < tests; i++) {
+            int size = random.Next (0, 16);
+            for (int j = 0; j < size; j++) {
+               t.RearEnqueue (j);
+               WriteLine ($"RearAdded: {j}\nCount: {t.Count}");
+               t.Display ();
+               t.FrontEnqueue (j);
+               WriteLine ($"FrontAdded: {j}\nCount: {t.Count}");
+               t.Display ();
+            }
+            size = random.Next (0, 16);
+            for (int j = 0; j < size; j++) {
+               WriteLine ($"FrontRemoved: {t.FrontDequeue ()}\nCount: {t.Count}");
+               t.Display ();
+               WriteLine ($"RearRemoved: {t.RearDequeue ()}\nCount: {t.Count}");
+               t.Display ();
+            }
          }
       } catch (Exception e) {
          WriteLine (e.Message);
@@ -43,86 +40,60 @@ class Program {
 }
 
 class TDoubleEndedQueue<T> {
+   public bool IsEmpty => mCount == 0;
+   public int Count => mCount;
+
    // Adds an element at the front of the queue
    public void FrontEnqueue (T a) {
-      if (startIdx == 0 && endIdx != mData.Length) {
-         mData[^1] = a;
-         startIdx = mData.Length - 1;
-         isFull = startIdx == endIdx;
-         return;
+      if (mCount == mData.Length) {
+         T[] temp = new T[2 * mCount];
+         for (int i = 0; i < mCount; i++) temp[i] = mData[(mStartIdx + i) % mCount];
+         mStartIdx = 0; mEndIdx = mCount; mData = temp;
       }
-      if (startIdx < endIdx) {
-         mData[startIdx - 1] = a;
-         startIdx--;
-         isFull = endIdx - startIdx == mData.Length;
-         return;
-      }
-      if (endIdx < startIdx) { mData[--startIdx] = a; isFull = startIdx == endIdx; return; }
-      if (isFull) {
-         T[] temp = new T[2 * mData.Length];
-         int i = 0;
-         temp[i++] = a;
-         for (; startIdx < mData.Length; i++) temp[i] = mData[startIdx++];
-         if (startIdx == endIdx) for (int j = 0; j < endIdx; i++, j++) temp[i] = mData[j];
-         startIdx = 0; endIdx = i; mData = temp;
-      }
+      int len = mData.Length;
+      mStartIdx = (mStartIdx - 1 + len) % len;
+      mData[mStartIdx] = a;
+      mCount++;
    }
 
    // Removes and returns the element at the rear of the queue
    public T RearDequeue () {
-      if (IsEmpty ()) throw new Exception ("Error: Can't dequeue from an empty queue!");
-      return mData[--endIdx];
+      if (IsEmpty) throw new Exception ("Error: Can't dequeue from an empty queue!");
+      int len = mData.Length;
+      mEndIdx = (mEndIdx - 1 + len) % len;
+      mCount--;
+      return mData[mEndIdx];
    }
 
    // Adds an element at the rear of the queue
    public void RearEnqueue (T a) {
-      bool isIdxSame = startIdx == endIdx;
-      if (endIdx == mData.Length && startIdx != 0) endIdx = 0;
-      if (isFull) {
-         T[] temp = new T[2 * mData.Length];
-         int i = 0;
-         for (; startIdx < mData.Length; i++) temp[i] = mData[startIdx++];
-         if (isIdxSame) for (int j = 0; j < endIdx; i++, j++) temp[i] = mData[j];
-         startIdx = 0; endIdx = i; mData = temp;
+      if (mCount == mData.Length) {
+         T[] temp = new T[2 * mCount];
+         for (int i = 0; i < mCount; i++) temp[i] = mData[(mStartIdx + i) % mCount];
+         mStartIdx = 0; mEndIdx = mCount; mData = temp;
       }
-      mData[endIdx++] = a;
-      isFull = (endIdx - startIdx == 0 || endIdx - startIdx == mData.Length);
+      mData[mEndIdx] = a;
+      mEndIdx = (mEndIdx + 1) % mData.Length;
+      mCount++;
    }
 
    // Removes and returns the element at the front of the queue
    public T FrontDequeue () {
-      if (IsEmpty ()) throw new Exception ("Error: Can't dequeue from an empty queue!");
-      if (startIdx == mData.Length - 1) {
-         startIdx = 0;
-         return mData[^1];
-      }
-      return mData[startIdx++];
-   }
-
-   // Returns true if the queue is empty
-   public bool IsEmpty () => !isFull && startIdx == endIdx;
-
-   // Returns the number of elements in the queue
-   public int Count () {
-      if (IsEmpty ()) return 0;
-      if (isFull) return mData.Length;
-      if (endIdx > startIdx) return endIdx - startIdx;
-      return mData.Length - startIdx + endIdx;
+      if (IsEmpty) throw new Exception ("Error: Can't dequeue from an empty queue!");
+      T a = mData[mStartIdx];
+      mStartIdx = (mStartIdx + 1) % mData.Length;
+      mCount--;
+      return a;
    }
 
    // Displays the elements in the queue from front to rear
    public void Display () {
-      if (IsEmpty ()) { WriteLine ("Queue Empty!\n"); return; }
+      if (IsEmpty) { WriteLine ("Queue Empty!\n"); return; }
       Write ("Queue: Front-> ");
-      if (endIdx <= startIdx) {
-         for (int i = startIdx; i < mData.Length; i++) Write ($"{mData[i]} ");
-         for (int i = 0; i < endIdx; i++) Write ($"{mData[i]} ");
-      }
-      for (int i = startIdx; i < endIdx; i++) Write ($"{mData[i]} ");
+      for (int i = 0; i < mCount; i++) Write ($"{mData[(mStartIdx + i) % mData.Length]} ");
       WriteLine ("<-Rear\n");
    }
 
    T[] mData = new T[4];
-   int startIdx, endIdx;
-   bool isFull;
+   int mStartIdx, mEndIdx, mCount;
 }
